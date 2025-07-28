@@ -1,11 +1,13 @@
 import {Bombs} from "../game-objects/Bombs.js";
+import {Platforms} from "../game-objects/Platforms.js";
 import {Player} from "../game-objects/Player.js";
 import {Stars} from "../game-objects/Stars.js";
-import {LevelGround} from "../levels/LevelGround.js";
-import {LevelScene} from "../levels/LevelScene.js";
+import {LevelGround} from "./LevelGround.js";
+import {LevelScene} from "./LevelScene.js";
 
 export class ColliderHandler {
     #bombs?: Bombs;
+    #platforms?: Platforms;
 
     constructor(
         readonly level: LevelScene,
@@ -15,7 +17,13 @@ export class ColliderHandler {
         this.level.physics.add.collider(player, ground);
     }
 
-    stars(stars: Stars) {
+    platforms(platforms: Platforms): this{
+        this.#platforms = platforms;
+        this.level.physics.add.collider(this.player, this.#platforms);
+        return this;
+    }
+
+    stars(stars: Stars): this {
         this.level.physics.add.collider(stars, this.ground);
         this.level.physics.add.collider(this.player, stars, (_, star) => {
             stars.collide(star as any);
@@ -23,14 +31,22 @@ export class ColliderHandler {
             if (this.#bombs) {
                 this.#bombs.spawn(this.player);
             }
-        }, undefined, this.level)
+        }, undefined, this.level);
+        if (this.#platforms) {
+            this.level.physics.add.collider(stars, this.#platforms);
+        }
+        return this;
     }
 
-    bombs(bombs: Bombs) {
+    bombs(bombs: Bombs): this {
         this.#bombs = bombs;
         this.level.physics.add.collider(this.#bombs, this.ground);
         this.level.physics.add.collider(this.player, this.#bombs, (_, _bomb) => {
             this.level.scene.start('GameOver');
         }, undefined, this.level);
+        if (this.#platforms) {
+            this.level.physics.add.collider(this.#bombs, this.#platforms);
+        }
+        return this;
     }
 }

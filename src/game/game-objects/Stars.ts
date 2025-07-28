@@ -19,6 +19,7 @@ export class Stars extends Phaser.Physics.Arcade.Group {
             key: 'star',
             repeat: Stars.SPAWN_COUNT,
             setXY: { x: Stars.SPAWN_X_MIN, y: Stars.SPAWN_Y, stepX: Stars.SPAWN_X_STEP },
+            collideWorldBounds: true,
         });
 
         this.children.iterate(this.initChild.bind(this) as any);
