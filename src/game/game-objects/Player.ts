@@ -1,3 +1,4 @@
+import {Lives} from "./Lives.js";
 import {Score} from "./Score.js";
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
@@ -41,6 +42,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     readonly cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     readonly score: Score;
+    readonly lives: Lives;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, Player.Key);
@@ -56,7 +58,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
 
         this.score = new Score(scene);
+        this.lives = new Lives(scene);
         this.cursors = this.scene.input.keyboard.createCursorKeys();
+    }
+
+    isBlocking(): boolean{
+        return this.cursors.space.isDown;
     }
 
     update() {
@@ -74,6 +81,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         if (up.isDown && this.body!.touching.down) {
             this.setVelocityY(-330);
+        }
+    }
+
+    hit(){
+        const lives = this.lives.decrease(1);
+        if (lives === 0) {
+            this.scene.scene.start('GameOver');
         }
     }
 }

@@ -31,4 +31,12 @@ export class Bombs extends Phaser.Physics.Arcade.Group {
             .setCollideWorldBounds(true)
             .setVelocity(Phaser.Math.Between(this.VELOCITY_X_MIN, this.VELOCITY_X_MAX), this.VELOCITY_Y);
     }
+
+    hit(bomb: Bomb): void{
+        bomb.destroy(true);
+    }
+
+    blocked(bomb: Bomb): void{
+        bomb.setVelocityX(bomb.body.velocity.x * 2);
+    }
 }

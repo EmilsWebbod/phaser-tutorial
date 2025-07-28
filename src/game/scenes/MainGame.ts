@@ -16,11 +16,11 @@ export class MainGame extends LevelScene {
     }
 
     create(): void {
-        this.player = new Player(this, 100, 450);
         const ground = new LevelGround(this);
+        this.platforms = new Platforms(this, 400, 100);
         const stars = new Stars(this);
         const bombs = new Bombs(this);
-        this.platforms = new Platforms(this, 400, 100);
+        this.player = new Player(this, 100, 450);
 
         const collider = new ColliderHandler(this, ground, this.player);
 

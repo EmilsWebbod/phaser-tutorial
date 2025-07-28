@@ -3,7 +3,7 @@ export class Score extends Phaser.GameObjects.Text {
     static Label: string = 'Score: ';
 
     constructor(scene: Phaser.Scene) {
-        super(scene, 16, 16, Score.Label + "0", {fontSize: '32px', color: '#000'});
+        super(scene, 620, 550, Score.Label + "0", {fontSize: '32px', color: '#000'});
         scene.add.existing(this);
         scene.registry.set(Score.Key, 0);
     }

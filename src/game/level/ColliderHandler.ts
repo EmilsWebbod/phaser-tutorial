@@ -41,8 +41,13 @@ export class ColliderHandler {
     bombs(bombs: Bombs): this {
         this.#bombs = bombs;
         this.level.physics.add.collider(this.#bombs, this.ground);
-        this.level.physics.add.collider(this.player, this.#bombs, (_, _bomb) => {
-            this.level.scene.start('GameOver');
+        this.level.physics.add.collider(this.player, this.#bombs, (_, bomb) => {
+            if (this.player.isBlocking()){
+                this.#bombs!.blocked(bomb as any);
+                return;
+            }
+            this.player.hit();
+            this.#bombs!.hit(bomb as any);
         }, undefined, this.level);
         if (this.#platforms) {
             this.level.physics.add.collider(this.#bombs, this.#platforms);
