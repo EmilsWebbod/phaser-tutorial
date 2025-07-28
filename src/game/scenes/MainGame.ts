@@ -1,49 +1,31 @@
 import {Player} from "../game-objects/Player.ts";
-import {Score} from "../game-objects/Score.ts";
 import {Stars} from "../game-objects/Stars.ts";
 import {Bombs} from "../game-objects/Bombs.ts";
-import {Level} from "../levels/Level.ts";
+import {LevelGround} from "../levels/LevelGround.ts";
+import {LevelScene} from "../levels/LevelScene.js";
+import {ColliderHandler} from "../physics/ColliderHandler.js";
 
-export class MainGame extends Phaser.Scene {
+export class MainGame extends LevelScene {
     background: Phaser.GameObjects.Image;
     player: Player;
-    level: Level;
-    stars: Stars;
-    bombs: Bombs;
-
-    score: Score;
 
     constructor() {
         super('MainGame');
     }
 
     create(): void {
-        this.level = new Level(this);
         this.player = new Player(this, 100, 450);
-        this.stars = new Stars(this);
-        this.bombs = new Bombs(this);
+        const ground = new LevelGround(this);
+        const stars = new Stars(this);
+        const bombs = new Bombs(this);
 
-        this.physics.add.collider(this.player, this.level);
-        this.physics.add.collider(this.bombs, this.level);
-        this.physics.add.collider(this.stars, this.level);
+        const collider = new ColliderHandler(this, ground, this.player);
 
-        this.physics.add.collider(this.player, this.stars, this.collideStar, undefined, this);
-        this.physics.add.collider(this.player, this.bombs, this.collideBomb, undefined, this);
-
-        this.score = new Score(this);
+        collider.stars(stars);
+        collider.bombs(bombs);
     }
 
     update(): void {
         this.player.update();
-    }
-
-    collideStar(player: any, star: any): void {
-        this.stars.collide(star);
-        this.bombs.spawn(player);
-        this.score.collideWithStar();
-    }
-
-    collideBomb(): void {
-        this.scene.start('GameOver');
     }
 }

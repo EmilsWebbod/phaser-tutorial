@@ -8,8 +8,8 @@ export class Score extends Phaser.GameObjects.Text {
         scene.registry.set(Score.Key, 0);
     }
 
-    collideWithStar() {
-        this.scene.registry.inc(Score.Key, 10);
+    increase(points: number) {
+        this.scene.registry.inc(Score.Key, points);
         this.setText(Score.Label + this.scene.registry.get(Score.Key));
     }
 }

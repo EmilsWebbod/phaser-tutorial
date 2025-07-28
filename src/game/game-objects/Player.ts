@@ -1,7 +1,6 @@
+import {Score} from "./Score.js";
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
-    cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-
     static Key = 'dude';
     static Animations  = {
         Left: 'left',
@@ -40,6 +39,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
+    readonly cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+    readonly score: Score;
+
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, Player.Key);
         if (!this.scene.input.keyboard) {
@@ -53,6 +55,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.setCollideWorldBounds(true);
 
 
+        this.score = new Score(scene);
         this.cursors = this.scene.input.keyboard.createCursorKeys();
     }
 

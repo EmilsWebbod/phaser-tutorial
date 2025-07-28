@@ -12,6 +12,7 @@ export class Stars extends Phaser.Physics.Arcade.Group {
 
     readonly BOUNCE_MIN: number = 0.4;
     readonly BOUNCE_MAX: number = 0.8;
+    readonly SCORE_POINTS: number = 10;
 
     constructor(scene: Phaser.Scene) {
         super(scene.physics.world, scene, {

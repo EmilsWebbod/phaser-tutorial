@@ -2,7 +2,7 @@ import {Scene} from 'phaser';
 import {MainMenu} from "./MainMenu.ts";
 import {Player} from "../game-objects/Player.ts";
 import {Stars} from "../game-objects/Stars.ts";
-import {Level} from "../levels/Level.ts";
+import {LevelGround} from "../levels/LevelGround.ts";
 import {Bombs} from "../game-objects/Bombs.ts";
 
 export class Preloader extends Scene {
@@ -15,7 +15,7 @@ export class Preloader extends Scene {
     }
 
     preload() {
-        Level.preload(this);
+        LevelGround.preload(this);
         Player.preload(this);
         Stars.preload(this);
         Bombs.preload(this);
