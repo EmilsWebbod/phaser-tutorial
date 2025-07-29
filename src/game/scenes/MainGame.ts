@@ -11,6 +11,7 @@ export class MainGame extends LevelScene {
     background: Phaser.GameObjects.Image;
     player: Player;
     platforms: Platforms;
+    iceBlocks: IceBlocks;
 
     constructor() {
         super('MainGame');
@@ -26,14 +27,14 @@ export class MainGame extends LevelScene {
         const platform = this.platforms.spawn(400, 300);
         platform.setScale(0.5).refreshBody();
 
-        const iceBlocks = new IceBlocks(this);
-        iceBlocks.spawn(64*4, 450);
-        iceBlocks.spawn(64, 200);
+        this.iceBlocks = new IceBlocks(this);
+        this.iceBlocks.spawn(64*4, 450);
+        this.iceBlocks.spawn(64, 200);
 
         const collider = new ColliderHandler(this, ground, this.player);
 
         collider.platforms(this.platforms);
-        collider.iceBlocks(iceBlocks, iceBlocks.collideWithPlayer.bind(iceBlocks));
+        collider.iceBlocks(this.iceBlocks, this.iceBlocks.collideWithPlayer.bind(this.iceBlocks));
 
         collider.stars(stars, stars.collectByPlayer.bind(stars));
         stars.on('collected', () => {
@@ -42,7 +43,13 @@ export class MainGame extends LevelScene {
             }
         })
 
-        collider.bombs(bombs, bombs.collideWithPlayer.bind(bombs));
+        collider.bombs(bombs, {
+            withPlayer: bombs.collideWithPlayer.bind(bombs),
+            withIceBlock: (iceBlock, bomb) => {
+                bomb.destroy(true);
+                this.iceBlocks.melt(iceBlock, 0.2);
+            }
+        });
     }
 
     update(): void {
