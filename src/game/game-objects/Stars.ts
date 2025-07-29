@@ -5,14 +5,19 @@ export class Stars extends Phaser.Physics.Arcade.Group {
     static preload(scene: Phaser.Scene) {
         scene.load.image('star', 'assets/star.png');
     }
+    static create(scene: Phaser.Scene) {
+        scene.anims.create({
+            key: 'collect',
+            frames: scene.anims.generateFrameNumbers('explosion', { start: 0, end: 7 }),
+            frameRate: 8
+        })
+    }
 
     static SPAWN_COUNT: number = 11;
     static SPAWN_Y: number = 5;
     static SPAWN_X_MIN: number = 12;
     static SPAWN_X_STEP: number = 70;
 
-    readonly BOUNCE_MIN: number = 0.4;
-    readonly BOUNCE_MAX: number = 0.8;
     readonly SCORE_POINTS: number = 10;
 
     constructor(scene: Phaser.Scene) {
@@ -23,7 +28,6 @@ export class Stars extends Phaser.Physics.Arcade.Group {
             collideWorldBounds: true,
         });
 
-        this.children.iterate(this.initChild.bind(this) as any);
         Phaser.Events.EventEmitter.call(this);
     }
 
@@ -36,11 +40,12 @@ export class Stars extends Phaser.Physics.Arcade.Group {
 
         player.score.increase(this.SCORE_POINTS);
         this.emit('collected', star);
-    }
 
-    private initChild(child: Star): null | boolean {
-        child.setBounceY(Phaser.Math.FloatBetween(this.BOUNCE_MIN, this.BOUNCE_MAX));
-        return null
+        const collect = this.scene.add.sprite(star.x, star.y-12, 'explosion');
+        collect.play('collect');
+        collect.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+            collect.destroy(true);
+        })
     }
 
     private enableChild(star: Star): null | boolean {
