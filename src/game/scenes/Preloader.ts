@@ -5,6 +5,7 @@ import {Player} from "../game-objects/Player.ts";
 import {Stars} from "../game-objects/Stars.ts";
 import {LevelGround} from "../level/LevelGround.ts";
 import {Bombs} from "../game-objects/Bombs.ts";
+import {IceBlocks} from "../game-objects/IceBlocks.ts";
 
 export class Preloader extends Scene {
     constructor() {
@@ -21,6 +22,7 @@ export class Preloader extends Scene {
         Player.preload(this);
         Stars.preload(this);
         Bombs.preload(this);
+        IceBlocks.preload(this);
     }
 
     create() {

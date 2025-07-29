@@ -1,13 +1,15 @@
-import {Bombs} from "../game-objects/Bombs.js";
+import {Bomb, Bombs} from "../game-objects/Bombs.js";
 import {Platforms} from "../game-objects/Platforms.js";
 import {Player} from "../game-objects/Player.js";
-import {Stars} from "../game-objects/Stars.js";
+import {Star, Stars} from "../game-objects/Stars.js";
 import {LevelGround} from "./LevelGround.js";
 import {LevelScene} from "./LevelScene.js";
+import {IceBlock, IceBlocks} from "../game-objects/IceBlocks.ts";
 
 export class ColliderHandler {
-    #bombs?: Bombs;
     #platforms?: Platforms;
+    #iceBlocks?: IceBlocks;
+    #bombs?: Bombs;
 
     constructor(
         readonly level: LevelScene,
@@ -23,34 +25,33 @@ export class ColliderHandler {
         return this;
     }
 
-    stars(stars: Stars): this {
-        this.level.physics.add.collider(stars, this.ground);
-        this.level.physics.add.collider(this.player, stars, (_, star) => {
-            stars.collide(star as any);
-            this.player.score.increase(stars.SCORE_POINTS);
-            if (this.#bombs) {
-                this.#bombs.spawn(this.player);
-            }
-        }, undefined, this.level);
-        if (this.#platforms) {
-            this.level.physics.add.collider(stars, this.#platforms);
-        }
+    iceBlocks(blocks: IceBlocks, collideCallback: (player: Player, block: IceBlock) => void): this {
+        this.addStaticCollider(blocks);
+        this.#iceBlocks = blocks;
+        this.level.physics.add.collider(this.player, blocks, collideCallback as any);
         return this;
     }
 
-    bombs(bombs: Bombs): this {
+    stars(stars: Stars, collideCallback: (player: Player, star: Star) => void): this {
+        this.addStaticCollider(stars);
+        this.level.physics.add.overlap(this.player, stars, collideCallback as any, undefined, this.level);
+        return this;
+    }
+
+    bombs(bombs: Bombs, collideCallback: (player: Player, bomb: Bomb) => void): this {
         this.#bombs = bombs;
-        this.level.physics.add.collider(this.#bombs, this.ground);
-        this.level.physics.add.collider(this.player, this.#bombs, (_, bomb) => {
-            if (this.player.isBlocking()){
-                this.#bombs!.blocked(bomb as any);
-                return;
-            }
-            this.player.hit();
-            this.#bombs!.hit(bomb as any);
-        }, undefined, this.level);
+        this.addStaticCollider(bombs);
+        this.level.physics.add.overlap(this.player, this.#bombs, collideCallback as any, undefined, this.level);
+        return this;
+    }
+
+    private addStaticCollider(object: Phaser.Types.Physics.Arcade.ArcadeColliderType): this {
+        this.level.physics.add.collider(object, this.ground);
         if (this.#platforms) {
-            this.level.physics.add.collider(this.#bombs, this.#platforms);
+            this.level.physics.add.collider(object, this.#platforms);
+        }
+        if (this.#iceBlocks) {
+            this.level.physics.add.collider(object, this.#iceBlocks);
         }
         return this;
     }

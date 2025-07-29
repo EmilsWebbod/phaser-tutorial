@@ -1,5 +1,5 @@
 
-type Star = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+export type Star = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 export class Stars extends Phaser.Physics.Arcade.Group {
     static preload(scene: Phaser.Scene) {
         scene.load.image('star', 'assets/star.png');

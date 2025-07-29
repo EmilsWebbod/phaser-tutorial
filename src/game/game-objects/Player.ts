@@ -53,7 +53,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.setBounce(0.2);
         this.setCollideWorldBounds(true);
 
 
@@ -80,7 +79,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         if (up.isDown && this.body!.touching.down) {
-            this.setVelocityY(-330);
+            this.setVelocityY(-250);
         }
     }
 

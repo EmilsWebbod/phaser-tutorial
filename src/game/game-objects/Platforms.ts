@@ -6,14 +6,18 @@ export class Platforms extends Phaser.Physics.Arcade.Group {
         scene.load.image(Platforms.Key, 'assets/platform.png');
     }
 
-    constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene.physics.world, scene, {
-            key: Platforms.Key,
-            immovable: true,
-            allowGravity: false,
-            velocityX: 50,
-            setXY: { x, y },
-        });
+    constructor(scene: Phaser.Scene) {
+        super(scene.physics.world, scene);
+    }
+
+    spawn(x: number, y: number): Platform {
+        const platform: Platform = this.create(x, y, Platforms.Key);
+        platform.setImmovable(true);
+        platform.body.allowGravity = false;
+        platform.setVelocityX(50);
+        platform.setX(x);
+        platform.setY(y);
+        return platform;
     }
 
     update(){

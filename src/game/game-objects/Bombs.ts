@@ -1,6 +1,6 @@
 import {Player} from "./Player.ts";
 
-type Bomb = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+export type Bomb = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
 export class Bombs extends Phaser.Physics.Arcade.Group {
     static Key = 'bomb';
