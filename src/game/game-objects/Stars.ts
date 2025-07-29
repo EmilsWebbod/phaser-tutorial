@@ -1,3 +1,4 @@
+import {Player} from "./Player.ts";
 
 export type Star = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 export class Stars extends Phaser.Physics.Arcade.Group {
@@ -23,14 +24,18 @@ export class Stars extends Phaser.Physics.Arcade.Group {
         });
 
         this.children.iterate(this.initChild.bind(this) as any);
+        Phaser.Events.EventEmitter.call(this);
     }
 
-    collide(star: Star): void {
+    collectByPlayer(player: Player, star: Star): void {
         star.disableBody(true, true);
 
         if (this.countActive(true) === 0){
             this.children.iterate(this.enableChild.bind(this) as any)
         }
+
+        player.score.increase(this.SCORE_POINTS);
+        this.emit('collected', star);
     }
 
     private initChild(child: Star): null | boolean {

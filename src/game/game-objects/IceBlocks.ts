@@ -1,3 +1,4 @@
+import {Player} from "./Player.ts";
 
 export type IceBlock = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 export class IceBlocks extends Phaser.Physics.Arcade.Group {
@@ -19,17 +20,21 @@ export class IceBlocks extends Phaser.Physics.Arcade.Group {
         return this;
     }
 
-    collide(block: IceBlock, move: 'left' | 'right'): this {
-        if (move === 'left' && block.body.blocked.left) return this;
-        if (move === 'right' && block.body.blocked.right) return this;
-        const delta = move === 'left' ? -64 : 64;
+    collideWithPlayer(player: Player, block: IceBlock): void {
+        if (player.body!.bottom < block.body.top) return;
+        if (!player.body!.touching.left && !player.body!.touching.right) return;
+
+        const move = (player.body!.touching.left && block.body.touching.right) ? 'left' : 'right';
+        const delta: number = move === 'left' ? -64 : 64;
+
+        if (move === 'left' && block.body.blocked.left) return;
+        if (move === 'right' && block.body.blocked.right) return;
 
         this.scene.tweens.add({
             targets: block,
             x: block.x + delta,
             duration: 200,
         })
-        return this;
     }
 
     melt(block: IceBlock, reduce: number): this {

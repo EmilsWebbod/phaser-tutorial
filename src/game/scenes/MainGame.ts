@@ -33,30 +33,16 @@ export class MainGame extends LevelScene {
         const collider = new ColliderHandler(this, ground, this.player);
 
         collider.platforms(this.platforms);
-        collider.iceBlocks(iceBlocks,  (player, ice) => {
-            if (player.body!.touching.left && ice.body.touching.right) {
-                iceBlocks.collide(ice, 'left');
-            } else if(player.body!.touching.right && ice.body.touching.left) {
-                iceBlocks.collide(ice, 'right');
-            }
-        });
+        collider.iceBlocks(iceBlocks, iceBlocks.collideWithPlayer.bind(iceBlocks));
 
-        collider.stars(stars, (_, star) => {
-            stars.collide(star as any);
-            this.player.score.increase(stars.SCORE_POINTS);
+        collider.stars(stars, stars.collectByPlayer.bind(stars));
+        stars.on('collected', () => {
             if (bombs) {
                 bombs.spawn(this.player);
             }
-        });
+        })
 
-        collider.bombs(bombs,  (player, bomb) => {
-            if (player.isBlocking()){
-                bombs!.blocked(bomb as any);
-                return;
-            }
-            player.hit();
-            bombs!.hit(bomb as any);
-        });
+        collider.bombs(bombs, bombs.collideWithPlayer.bind(bombs));
     }
 
     update(): void {
