@@ -46,7 +46,7 @@ export class MainGame extends LevelScene {
         collider.bombs(bombs, {
             withPlayer: bombs.collideWithPlayer.bind(bombs),
             withIceBlock: (iceBlock, bomb) => {
-                bomb.destroy(true);
+                bombs.explode(bomb);
                 this.iceBlocks.melt(iceBlock, 0.2);
             }
         });
