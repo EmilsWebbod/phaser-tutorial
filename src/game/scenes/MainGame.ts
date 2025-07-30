@@ -8,6 +8,7 @@ import {ColliderHandler} from "../level/ColliderHandler.js";
 import {IceBlocks} from "../game-objects/IceBlocks.ts";
 import {EffectsManager} from "../assets/Effects.ts";
 import {FloorSwitch, FloorSwitches, FloorSwitchEvent} from "../game-objects/FloorSwitch.ts";
+import {Doors} from "../game-objects/Door.ts";
 
 export class MainGame extends LevelScene {
     background: Phaser.GameObjects.Image;
@@ -22,6 +23,7 @@ export class MainGame extends LevelScene {
         this.effects = new EffectsManager(this);
         const ground = new LevelGround(this);
         const switches = new FloorSwitches(this);
+        const doors = new Doors(this);
         this.platforms = new Platforms(this);
         const stars = new Stars(this);
         const bombs = new Bombs(this);
@@ -30,7 +32,8 @@ export class MainGame extends LevelScene {
         const platform = this.platforms.spawn(400, 300);
         platform.setScale(0.5).refreshBody();
 
-        switches.spawn(128, 520, 'door1');
+        switches.spawn(150, 535).setDoorId('door-1');
+        const door = doors.spawn(400, 500, 'door-1');
 
         this.iceBlocks = new IceBlocks(this);
         this.iceBlocks.spawn(64*4, 450);
@@ -40,9 +43,16 @@ export class MainGame extends LevelScene {
 
         collider.platforms(this.platforms);
         collider.iceBlocks(this.iceBlocks, this.iceBlocks.collideWithPlayer.bind(this.iceBlocks));
-        collider.switches(switches, switches.onCollide);
+        collider.switches(switches, switches.onOverlap);
         this.events.on(FloorSwitchEvent.Activated, (sw: FloorSwitch) => {
-            console.log(sw);
+            if (sw.doorId === door.id) {
+                door.open();
+            }
+        });
+        this.events.on(FloorSwitchEvent.Deactivated, (sw: FloorSwitch) => {
+            if (sw.doorId === door.id) {
+                door.close();
+            }
         })
 
         collider.stars(stars, stars.collectByPlayer.bind(stars));

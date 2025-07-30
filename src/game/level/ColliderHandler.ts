@@ -33,9 +33,9 @@ export class ColliderHandler {
     }
 
     switches(floorSwitches: FloorSwitches, collideCallback: (_: never, floorSwitch: FloorSwitch) => void): this {
-        this.level.physics.add.overlap(this.player, floorSwitches, collideCallback as any)
+        this.level.physics.add.overlap(this.player, floorSwitches, collideCallback as any, undefined, this.level)
         if (this.#iceBlocks) {
-            this.level.physics.add.overlap(this.#iceBlocks, floorSwitches, collideCallback as any)
+            this.level.physics.add.overlap(this.#iceBlocks, floorSwitches, collideCallback as any, undefined, this.level)
         }
         return this;
     }
