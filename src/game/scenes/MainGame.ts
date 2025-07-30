@@ -6,18 +6,19 @@ import {LevelGround} from "../level/LevelGround.ts";
 import {LevelScene} from "../level/LevelScene.js";
 import {ColliderHandler} from "../level/ColliderHandler.js";
 import {IceBlocks} from "../game-objects/IceBlocks.ts";
+import {Effects} from "../assets/Effects.ts";
 
 export class MainGame extends LevelScene {
     background: Phaser.GameObjects.Image;
     player: Player;
     platforms: Platforms;
-    iceBlocks: IceBlocks;
 
     constructor() {
         super('MainGame');
     }
 
     create(): void {
+        this.effects = new Effects(this);
         const ground = new LevelGround(this);
         this.platforms = new Platforms(this);
         const stars = new Stars(this);
@@ -47,7 +48,7 @@ export class MainGame extends LevelScene {
             withPlayer: bombs.collideWithPlayer.bind(bombs),
             withIceBlock: (iceBlock, bomb) => {
                 bombs.explode(bomb);
-                this.iceBlocks.melt(iceBlock, 0.2);
+                this.iceBlocks!.melt(iceBlock, 0.2);
             }
         });
     }

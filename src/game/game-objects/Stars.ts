@@ -1,16 +1,10 @@
 import {Player} from "./Player.ts";
+import {LevelScene} from "../level/LevelScene.ts";
 
 export type Star = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 export class Stars extends Phaser.Physics.Arcade.Group {
     static preload(scene: Phaser.Scene) {
         scene.load.image('star', 'assets/star.png');
-    }
-    static create(scene: Phaser.Scene) {
-        scene.anims.create({
-            key: 'collect',
-            frames: scene.anims.generateFrameNumbers('explosion', { start: 0, end: 7 }),
-            frameRate: 8
-        })
     }
 
     static SPAWN_COUNT: number = 11;
@@ -20,7 +14,7 @@ export class Stars extends Phaser.Physics.Arcade.Group {
 
     readonly SCORE_POINTS: number = 10;
 
-    constructor(scene: Phaser.Scene) {
+    constructor(readonly scene: LevelScene) {
         super(scene.physics.world, scene, {
             key: 'star',
             repeat: Stars.SPAWN_COUNT,
@@ -41,11 +35,7 @@ export class Stars extends Phaser.Physics.Arcade.Group {
         player.score.increase(this.SCORE_POINTS);
         this.emit('collected', star);
 
-        const collect = this.scene.add.sprite(star.x, star.y-12, 'explosion');
-        collect.play('collect');
-        collect.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-            collect.destroy(true);
-        })
+        this.scene.effects.groundExplosion(star.x, star.y - 12);
     }
 
     private enableChild(star: Star): null | boolean {

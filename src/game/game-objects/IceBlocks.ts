@@ -34,7 +34,7 @@ export class IceBlocks extends Phaser.Physics.Arcade.Group {
             targets: block,
             x: block.x + delta,
             duration: 200,
-        })
+        });
     }
 
     melt(block: IceBlock, reduce: number): this {

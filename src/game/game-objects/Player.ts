@@ -1,5 +1,7 @@
 import {Lives} from "./Lives.js";
 import {Score} from "./Score.js";
+import {HeatCore} from "./HeatCore.ts";
+import {LevelScene} from "../level/LevelScene.ts";
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
     static Key = 'dude';
@@ -43,8 +45,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     readonly cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     readonly score: Score;
     readonly lives: Lives;
+    readonly tool: HeatCore;
 
-    constructor(scene: Phaser.Scene, x: number, y: number) {
+    constructor(scene: LevelScene, x: number, y: number) {
         super(scene, x, y, Player.Key);
         if (!this.scene.input.keyboard) {
             throw new Error('Keyboard not found')
@@ -59,6 +62,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.score = new Score(scene);
         this.lives = new Lives(scene);
         this.cursors = this.scene.input.keyboard.createCursorKeys();
+        this.tool = new HeatCore(scene, this);
     }
 
     isBlocking(): boolean{
@@ -66,7 +70,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-        const {left, right, up} = this.cursors;
+        const {left, right, up, space} = this.cursors;
         if (left.isDown) {
             this.setVelocityX(-160);
             this.anims.play(Player.Animations.Left, true);
@@ -80,6 +84,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         if (up.isDown && this.body!.touching.down) {
             this.setVelocityY(-250);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(space)) {
+            this.tool.use();
         }
     }
 

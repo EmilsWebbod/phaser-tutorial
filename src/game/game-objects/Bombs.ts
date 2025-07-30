@@ -1,4 +1,5 @@
 import {Player} from "./Player.ts";
+import {LevelScene} from "../level/LevelScene.ts";
 
 export type Bomb = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
@@ -7,18 +8,6 @@ export class Bombs extends Phaser.Physics.Arcade.Group {
     static Explosion = 'explosion';
     static preload(scene: Phaser.Scene) {
         scene.load.image(Bombs.Key, 'assets/bomb.png');
-        scene.load.spritesheet(Bombs.Explosion, 'assets/explosions.png', {
-            frameHeight: 64,
-            frameWidth: 64,
-        });
-    }
-
-    static create(scene: Phaser.Scene) {
-        scene.anims.create({
-            key: 'explode1',
-            frames: scene.anims.generateFrameNumbers(Bombs.Explosion, { start: 8*11, end: 8*11+7 }),
-            frameRate: 8,
-        })
     }
 
     readonly BOUNCE = 1;
@@ -30,7 +19,7 @@ export class Bombs extends Phaser.Physics.Arcade.Group {
     private SPAWN_X_MAX = 800;
     private SPAWN_X_CENTER = this.SPAWN_X_MAX / 2;
 
-    constructor(scene: Phaser.Scene) {
+    constructor(readonly scene: LevelScene) {
         super(scene.physics.world, scene);
         Phaser.Events.EventEmitter.call(this);
     }
@@ -60,12 +49,7 @@ export class Bombs extends Phaser.Physics.Arcade.Group {
     }
 
     explode(bomb: Bomb): void {
-        const explosion = this.scene.add.sprite(bomb.x, bomb.y, Bombs.Explosion);
-        explosion.play('explode1');
-        explosion.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-            explosion.destroy(true);
-        })
-
+        this.scene.effects.bombExplosion(bomb.x, bomb.y);
         this.emit('explode', bomb);
         bomb.destroy(true);
     }
