@@ -1,15 +1,8 @@
-import {Scene} from 'phaser';
-import {Platforms} from "../game-objects/Platforms.js";
 import {MainMenu} from "./MainMenu.ts";
-import {Player} from "../game-objects/Player.ts";
-import {Stars} from "../game-objects/Stars.ts";
-import {LevelGround} from "../level/LevelGround.ts";
-import {Bombs} from "../game-objects/Bombs.ts";
-import {IceBlocks} from "../game-objects/IceBlocks.ts";
-import {HeatCore} from "../game-objects/HeatCore.ts";
 import {EffectsManager} from "../assets/Effects.ts";
+import {Textures} from "../assets/Textures.ts";
 
-export class Preloader extends Scene {
+export class Preloader extends Phaser.Scene {
     constructor() {
         super('Preloader');
     }
@@ -19,12 +12,7 @@ export class Preloader extends Scene {
     }
 
     preload() {
-        LevelGround.preload(this);
-        Platforms.preload(this);
-        Player.preload(this);
-        Stars.preload(this);
-        Bombs.preload(this);
-        IceBlocks.preload(this);
+        Textures.preload(this);
         EffectsManager.preload(this);
     }
 
@@ -32,8 +20,7 @@ export class Preloader extends Scene {
 
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
         //  For example, you can define global animations here, so we can use them in other scenes.
-        Player.create(this);
-        HeatCore.create(this);
+        Textures.create(this);
         EffectsManager.create(this);
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.

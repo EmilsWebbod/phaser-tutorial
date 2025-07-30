@@ -5,6 +5,7 @@ import {Star, Stars} from "../game-objects/Stars.js";
 import {LevelGround} from "./LevelGround.js";
 import {LevelScene} from "./LevelScene.js";
 import {IceBlock, IceBlocks} from "../game-objects/IceBlocks.ts";
+import {FloorSwitch, FloorSwitches} from "../game-objects/FloorSwitch.ts";
 
 export class ColliderHandler {
     #platforms?: Platforms;
@@ -28,6 +29,14 @@ export class ColliderHandler {
         this.addStaticCollider(blocks, { });
         this.#iceBlocks = blocks;
         this.level.physics.add.collider(this.player, blocks, collideCallback as any);
+        return this;
+    }
+
+    switches(floorSwitches: FloorSwitches, collideCallback: (_: never, floorSwitch: FloorSwitch) => void): this {
+        this.level.physics.add.overlap(this.player, floorSwitches, collideCallback as any)
+        if (this.#iceBlocks) {
+            this.level.physics.add.overlap(this.#iceBlocks, floorSwitches, collideCallback as any)
+        }
         return this;
     }
 

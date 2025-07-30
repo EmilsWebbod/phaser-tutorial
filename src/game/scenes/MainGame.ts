@@ -7,6 +7,7 @@ import {LevelScene} from "../level/LevelScene.js";
 import {ColliderHandler} from "../level/ColliderHandler.js";
 import {IceBlocks} from "../game-objects/IceBlocks.ts";
 import {EffectsManager} from "../assets/Effects.ts";
+import {FloorSwitch, FloorSwitches, FloorSwitchEvent} from "../game-objects/FloorSwitch.ts";
 
 export class MainGame extends LevelScene {
     background: Phaser.GameObjects.Image;
@@ -20,6 +21,7 @@ export class MainGame extends LevelScene {
     create(): void {
         this.effects = new EffectsManager(this);
         const ground = new LevelGround(this);
+        const switches = new FloorSwitches(this);
         this.platforms = new Platforms(this);
         const stars = new Stars(this);
         const bombs = new Bombs(this);
@@ -27,6 +29,8 @@ export class MainGame extends LevelScene {
 
         const platform = this.platforms.spawn(400, 300);
         platform.setScale(0.5).refreshBody();
+
+        switches.spawn(128, 520, 'door1');
 
         this.iceBlocks = new IceBlocks(this);
         this.iceBlocks.spawn(64*4, 450);
@@ -36,6 +40,10 @@ export class MainGame extends LevelScene {
 
         collider.platforms(this.platforms);
         collider.iceBlocks(this.iceBlocks, this.iceBlocks.collideWithPlayer.bind(this.iceBlocks));
+        collider.switches(switches, switches.onCollide);
+        this.events.on(FloorSwitchEvent.Activated, (sw: FloorSwitch) => {
+            console.log(sw);
+        })
 
         collider.stars(stars, stars.collectByPlayer.bind(stars));
         stars.on('collected', () => {
@@ -47,7 +55,7 @@ export class MainGame extends LevelScene {
         collider.bombs(bombs, {
             withPlayer: bombs.collideWithPlayer.bind(bombs),
             withIceBlock: (iceBlock, bomb) => {
-                bombs.explode(bomb);
+                bomb.explode();
                 this.iceBlocks!.melt(iceBlock, 0.2);
             }
         });

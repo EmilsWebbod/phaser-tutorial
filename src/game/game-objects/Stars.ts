@@ -1,13 +1,10 @@
 import {Player} from "./Player.ts";
 import {LevelScene} from "../level/LevelScene.ts";
 import {FireEffect} from "../assets/Effects.ts";
+import {Textures} from "../assets/Textures.ts";
 
 export type Star = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 export class Stars extends Phaser.Physics.Arcade.Group {
-    static preload(scene: Phaser.Scene) {
-        scene.load.image('star', 'assets/star.png');
-    }
-
     static SPAWN_COUNT: number = 11;
     static SPAWN_Y: number = 5;
     static SPAWN_X_MIN: number = 12;
@@ -17,7 +14,7 @@ export class Stars extends Phaser.Physics.Arcade.Group {
 
     constructor(readonly scene: LevelScene) {
         super(scene.physics.world, scene, {
-            key: 'star',
+            key: Textures.Star,
             repeat: Stars.SPAWN_COUNT,
             setXY: { x: Stars.SPAWN_X_MIN, y: Stars.SPAWN_Y, stepX: Stars.SPAWN_X_STEP },
             collideWorldBounds: true,

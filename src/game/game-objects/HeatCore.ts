@@ -1,19 +1,9 @@
 import {LevelScene} from "../level/LevelScene.ts";
 import {Player} from "./Player.ts";
 import {IceBlock} from "./IceBlocks.ts";
-import {Bombs} from "./Bombs.ts";
 import {FireEffect} from "../assets/Effects.ts";
 
 export class HeatCore {
-
-    static create(scene: Phaser.Scene) {
-        scene.anims.create({
-            key: 'fire',
-            frames: scene.anims.generateFrameNumbers(Bombs.Explosion, { start: 8*23, end: 8*23+7 }),
-            frameRate: 8,
-        })
-    }
-
     constructor(private scene: LevelScene, private player: Player) {
     }
 

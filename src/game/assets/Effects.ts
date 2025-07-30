@@ -1,5 +1,11 @@
 import {LevelScene} from "../level/LevelScene.ts";
 
+export enum FireEffect {
+    GroundExplosion,
+    BombExplosion = 11,
+    Aura = 23,
+}
+
 export class EffectsManager {
     static FireKey = 'fire';
     static preload(scene: Phaser.Scene): void {
@@ -39,8 +45,3 @@ export class EffectsManager {
     }
 }
 
-export enum FireEffect {
-    GroundExplosion,
-    BombExplosion = 11,
-    Aura = 23,
-}

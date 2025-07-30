@@ -1,15 +1,10 @@
 import {Player} from "./Player.ts";
 import {LevelScene} from "../level/LevelScene.ts";
 import {FireEffect} from "../assets/Effects.ts";
-
-export type Bomb = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+import {Textures} from "../assets/Textures.ts";
 
 export class Bombs extends Phaser.Physics.Arcade.Group {
-    static Key = 'bomb';
     static Explosion = 'explosion';
-    static preload(scene: Phaser.Scene) {
-        scene.load.image(Bombs.Key, 'assets/bomb.png');
-    }
 
     readonly BOUNCE = 1;
     readonly VELOCITY_X_MIN = -200;
@@ -22,6 +17,7 @@ export class Bombs extends Phaser.Physics.Arcade.Group {
 
     constructor(readonly scene: LevelScene) {
         super(scene.physics.world, scene);
+        this.classType = Bomb;
         Phaser.Events.EventEmitter.call(this);
     }
 
@@ -30,7 +26,7 @@ export class Bombs extends Phaser.Physics.Arcade.Group {
             ? Phaser.Math.Between(this.SPAWN_X_CENTER, this.SPAWN_X_MAX)
             : Phaser.Math.Between(this.SPAWN_X_MIN, this.SPAWN_X_CENTER);
 
-        const bomb: Bomb = this.create(SPAWN_X, this.SPAWN_Y, Bombs.Key);
+        const bomb: Bomb = this.create(SPAWN_X, this.SPAWN_Y, Textures.Bomb);
         bomb.setBounce(this.BOUNCE)
             .setCollideWorldBounds(true)
             .setVelocity(Phaser.Math.Between(this.VELOCITY_X_MIN, this.VELOCITY_X_MAX), this.VELOCITY_Y);
@@ -38,20 +34,26 @@ export class Bombs extends Phaser.Physics.Arcade.Group {
 
     collideWithPlayer(player: Player, bomb: Bomb): void{
         if (player.isBlocking()){
-            this.blocked(bomb)
+            bomb.blocked()
             return;
         }
         player.hit();
-        this.explode(bomb);
+        bomb.explode();
+    }
+}
+
+export class Bomb extends Phaser.Physics.Arcade.Sprite {
+    constructor(readonly scene: LevelScene, x: number, y: number) {
+        super(scene, x, y, 'bomb');
     }
 
-    blocked(bomb: Bomb): void{
-        bomb.setVelocityX(bomb.body.velocity.x * 2);
+    explode(): void {
+        this.scene.effects.fire(FireEffect.BombExplosion, this.x, this.y);
+        this.destroy(true);
     }
 
-    explode(bomb: Bomb): void {
-        this.scene.effects.fire(FireEffect.BombExplosion, bomb.x, bomb.y);
-        this.emit('explode', bomb);
-        bomb.destroy(true);
+    blocked(): void {
+        if (!this.body) return;
+        this.setVelocityX(this.body.velocity.x * 2) ;
     }
 }

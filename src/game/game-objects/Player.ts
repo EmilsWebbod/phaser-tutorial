@@ -2,53 +2,16 @@ import {Lives} from "./Lives.js";
 import {Score} from "./Score.js";
 import {HeatCore} from "./HeatCore.ts";
 import {LevelScene} from "../level/LevelScene.ts";
+import {Textures} from "../assets/Textures.ts";
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
-    static Key = 'dude';
-    static Animations  = {
-        Left: 'left',
-        Right: 'right',
-        Turn: 'turn',
-    }
-
-    static preload(scene: Phaser.Scene){
-        scene.load.spritesheet(Player.Key, 'assets/dude.png', {
-            frameWidth: 32,
-            frameHeight: 48,
-        });
-    }
-
-    static create(scene: Phaser.Scene) {
-        //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
-        //  For example, you can define global animations here, so we can use them in other scenes.
-        scene.anims.create({
-            key: Player.Animations.Left,
-            frames: scene.anims.generateFrameNumbers(Player.Key, {start: 0, end: 3}),
-            frameRate: 10,
-            repeat: -1,
-        });
-
-        scene.anims.create({
-            key: Player.Animations.Turn,
-            frames: [{key: Player.Key, frame: 4}],
-            frameRate: 20,
-        });
-
-        scene.anims.create({
-            key: Player.Animations.Right,
-            frames: scene.anims.generateFrameNumbers(Player.Key, {start: 5, end: 8}),
-            frameRate: 10,
-            repeat: -1,
-        });
-    }
-
     readonly cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     readonly score: Score;
     readonly lives: Lives;
     readonly tool: HeatCore;
 
     constructor(scene: LevelScene, x: number, y: number) {
-        super(scene, x, y, Player.Key);
+        super(scene, x, y, Textures.Dude);
         if (!this.scene.input.keyboard) {
             throw new Error('Keyboard not found')
         }
@@ -73,13 +36,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         const {left, right, up, space} = this.cursors;
         if (left.isDown) {
             this.setVelocityX(-160);
-            this.anims.play(Player.Animations.Left, true);
+            this.anims.play(Textures.Animations.Dude.Left, true);
         } else if (right.isDown) {
             this.setVelocityX(160);
-            this.anims.play(Player.Animations.Right, true);
+            this.anims.play(Textures.Animations.Dude.Right, true);
         } else {
             this.setVelocityX(0);
-            this.anims.play(Player.Animations.Turn);
+            this.anims.play(Textures.Animations.Dude.Turn);
         }
 
         if (up.isDown && this.body!.touching.down) {
