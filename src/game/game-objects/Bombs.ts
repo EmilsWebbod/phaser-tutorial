@@ -1,5 +1,6 @@
 import {Player} from "./Player.ts";
 import {LevelScene} from "../level/LevelScene.ts";
+import {FireEffect} from "../assets/Effects.ts";
 
 export type Bomb = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
@@ -49,7 +50,7 @@ export class Bombs extends Phaser.Physics.Arcade.Group {
     }
 
     explode(bomb: Bomb): void {
-        this.scene.effects.bombExplosion(bomb.x, bomb.y);
+        this.scene.effects.fire(FireEffect.BombExplosion, bomb.x, bomb.y);
         this.emit('explode', bomb);
         bomb.destroy(true);
     }

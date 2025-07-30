@@ -2,10 +2,11 @@ import {LevelScene} from "../level/LevelScene.ts";
 import {Player} from "./Player.ts";
 import {IceBlock} from "./IceBlocks.ts";
 import {Bombs} from "./Bombs.ts";
+import {FireEffect} from "../assets/Effects.ts";
 
 export class HeatCore {
 
-    static create(scene: LevelScene) {
+    static create(scene: Phaser.Scene) {
         scene.anims.create({
             key: 'fire',
             frames: scene.anims.generateFrameNumbers(Bombs.Explosion, { start: 8*23, end: 8*23+7 }),
@@ -19,7 +20,7 @@ export class HeatCore {
     use(): void {
         if (!this.scene.iceBlocks) return;
 
-        this.scene.effects.fireAura(this.player.x, this.player.y);
+        this.scene.effects.fire(FireEffect.Aura, this.player.x, this.player.y);
 
         const children = this.scene.iceBlocks.getChildren() as IceBlock[];
         children.forEach((block: IceBlock) => {

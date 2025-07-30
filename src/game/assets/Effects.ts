@@ -1,9 +1,9 @@
 import {LevelScene} from "../level/LevelScene.ts";
 
-export class Effects {
-    static Fire = 'fire';
+export class EffectsManager {
+    static FireKey = 'fire';
     static preload(scene: Phaser.Scene): void {
-        scene.load.spritesheet(Effects.Fire, 'assets/explosions.png', {
+        scene.load.spritesheet(EffectsManager.FireKey, 'assets/explosions.png', {
             frameHeight: 64,
             frameWidth: 64,
         });
@@ -13,7 +13,7 @@ export class Effects {
         for (let i = 0; i < 24; i++) {
             scene.anims.create({
                 key: 'fire'+i,
-                frames: scene.anims.generateFrameNumbers(Effects.Fire, { start: i*8, end: i*8+7 }),
+                frames: scene.anims.generateFrameNumbers(EffectsManager.FireKey, { start: i*8, end: i*8+7 }),
                 frameRate: 8,
                 hideOnComplete: true,
             })
@@ -26,19 +26,21 @@ export class Effects {
         this.#fire = scene.add.group({
             classType: Phaser.GameObjects.Sprite,
             runChildUpdate: false,
-        })
+        });
     }
 
-    groundExplosion = this.spawnFire('fire0')
-    bombExplosion = this.spawnFire('fire11')
-    fireAura = this.spawnFire('fire23');
-
-    private spawnFire(animation: string): (x: number, y: number) => void {
-        return (x: number, y: number): void => {
-            const explosion: Phaser.GameObjects.Sprite = this.#fire.get(x, y, Effects.Fire);
-            explosion.setActive(true).setVisible(true);
-            explosion.play(animation);
-        }
+    fire(key: FireEffect, x: number, y: number): Phaser.GameObjects.Sprite {
+        const explosion: Phaser.GameObjects.Sprite = this.#fire.get(x, y, EffectsManager.FireKey);
+        explosion.setActive(true).setVisible(true).play('fire'+key);
+        explosion.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+            explosion.setActive(false).setVisible(false);
+        });
+        return explosion;
     }
+}
 
+export enum FireEffect {
+    GroundExplosion,
+    BombExplosion = 11,
+    Aura = 23,
 }

@@ -7,7 +7,7 @@ import {LevelGround} from "../level/LevelGround.ts";
 import {Bombs} from "../game-objects/Bombs.ts";
 import {IceBlocks} from "../game-objects/IceBlocks.ts";
 import {HeatCore} from "../game-objects/HeatCore.ts";
-import {Effects} from "../assets/Effects.ts";
+import {EffectsManager} from "../assets/Effects.ts";
 
 export class Preloader extends Scene {
     constructor() {
@@ -25,7 +25,7 @@ export class Preloader extends Scene {
         Stars.preload(this);
         Bombs.preload(this);
         IceBlocks.preload(this);
-        Effects.preload(this);
+        EffectsManager.preload(this);
     }
 
     create() {
@@ -34,7 +34,7 @@ export class Preloader extends Scene {
         //  For example, you can define global animations here, so we can use them in other scenes.
         Player.create(this);
         HeatCore.create(this);
-        Effects.create(this);
+        EffectsManager.create(this);
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
         this.scene.start(MainMenu.name);

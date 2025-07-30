@@ -1,5 +1,6 @@
 import {Player} from "./Player.ts";
 import {LevelScene} from "../level/LevelScene.ts";
+import {FireEffect} from "../assets/Effects.ts";
 
 export type Star = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 export class Stars extends Phaser.Physics.Arcade.Group {
@@ -35,7 +36,7 @@ export class Stars extends Phaser.Physics.Arcade.Group {
         player.score.increase(this.SCORE_POINTS);
         this.emit('collected', star);
 
-        this.scene.effects.groundExplosion(star.x, star.y - 12);
+        this.scene.effects.fire(FireEffect.GroundExplosion, star.x, star.y - 12);
     }
 
     private enableChild(star: Star): null | boolean {
